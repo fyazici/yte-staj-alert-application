@@ -1,33 +1,12 @@
 .App {
-  text-align: center;
+  background: #e9e9e9;
+  margin: auto;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.AlertInputBox {
+  border: 1px solid rgb(75, 75, 75);
+  border-radius: 5px;
+  background: #e1f7d0;
+  margin: 10px;
+  padding: 10px;
 }
