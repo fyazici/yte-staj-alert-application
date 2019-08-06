@@ -35,12 +35,14 @@ class AlertInput extends Component {
     }
 
     handleAlertSave = () => {
-        axios.post("http://localhost:8090/alert", {
+        axios.post("http://localhost:8090/alerts", {
             name: this.state.alertName,
             url: this.state.alertURL,
             method: this.state.httpMethod,
             period: this.state.controlPeriod
-        });
+        }).catch((err) => {
+            console.error("Alert save error: " + err);
+        })
     }
 
     render() {
@@ -74,7 +76,7 @@ class AlertInput extends Component {
                             <Form.Control type="number" min="1" value={this.state.controlPeriod} onChange={this.handleControlPeriodChange} />
                         </Col>
                     </Form.Group>
-                    <Button variant="primary" size="lg" block onClick={this.handleAlertSave}>Kaydet</Button>
+                    <Button variant="primary" size="md" block onClick={this.handleAlertSave}>Kaydet</Button>
                 </Form>
             </div>
         );
