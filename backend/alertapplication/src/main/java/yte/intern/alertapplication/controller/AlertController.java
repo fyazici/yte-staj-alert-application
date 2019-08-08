@@ -1,6 +1,6 @@
 package yte.intern.alertapplication.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import yte.intern.alertapplication.dto.AlertDTO;
 import yte.intern.alertapplication.dto.ResultDTO;
@@ -10,10 +10,10 @@ import java.util.List;
 
 @RestController
 @CrossOrigin("*")
+@RequiredArgsConstructor
 public class AlertController {
 
-    @Autowired
-    private AlertService alertService;
+    private final AlertService alertService;
 
     @PostMapping("/alerts")
     public void createAlert(@RequestBody AlertDTO alertDTO) {

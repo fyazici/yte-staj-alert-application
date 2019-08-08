@@ -3,6 +3,7 @@ package yte.intern.alertapplication.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -19,14 +20,16 @@ public class Alert {
     private String url;
     private String method;
     private Long period;
+    private LocalDateTime nextDeadline;
 
-    @OneToMany(mappedBy = "alert")
+    @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "alert")
     private Set<Result> results;
 
-    public Alert(String name, String url, String method, Long period) {
+    public Alert(String name, String url, String method, Long period, LocalDateTime nextDeadline) {
         this.name = name;
         this.url = url;
         this.method = method;
         this.period = period;
+        this.nextDeadline = nextDeadline;
     }
 }
