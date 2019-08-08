@@ -11,7 +11,10 @@ class ResultChart extends Component {
                 this.ResultChartHeader
             ]
         };
-        console.log(props);
+
+        if (!this.props.alertId) {
+            this.props.alertId = -1;
+        }
     }
 
     ResultChartHeader = [
@@ -19,17 +22,30 @@ class ResultChart extends Component {
         { type: "number", id: "success", label: "Success" }
     ];
 
+    componentDidMount() {
+        this.refreshTimer = setInterval(this.retrieveChartData, 1000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.refreshTimer);
+    }
+
     componentDidUpdate(prevProps, prevState) {
         if (this.props !== prevProps) {
+            this.retrieveChartData();
+        }
+    }
+
+    retrieveChartData = () => {
+        if (this.props.alertId !== -1) {
             axios.get(
                 "http://localhost:8080/results/" + this.props.alertId
             ).then((resp) => {
                 var newResults = resp.data.map((elem, index) => {
-                    return [new Date(elem.timestamp), elem.success ? 1 : -1];
+                    return [new Date(elem.timestamp), elem.success ? 1 : 0];
                 });
                 var newResultData = [this.ResultChartHeader].concat(newResults);
-                console.log(newResultData);
-                this.setState({resultData: newResultData});
+                this.setState({ resultData: newResultData });
             }).catch((err) => {
                 console.error("Error on axios get: " + err);
             });
@@ -40,29 +56,16 @@ class ResultChart extends Component {
         return (
             <Container className="ResultChartBox">
                 <Chart
-                    chartType="ColumnChart"
+                    chartType="ScatterChart"
                     loader={<div>Loading Chart</div>}
                     data={this.state.resultData}
                     options={{
                         chart: {
                             title: "Request Results",
                         },
-                        axes: {
-                            x: {
-                                all: {
-                                    range: {
-                                        min: 0
-                                    }
-                                }
-                            },
-                            y: {
-                                all: {
-                                    range: {
-                                        max: 1,
-                                        min: 0
-                                    }
-                                }
-                            }
+                        vAxis: {
+                            minValue: 0,
+                            maxValue: 1
                         }
                     }}
                 />

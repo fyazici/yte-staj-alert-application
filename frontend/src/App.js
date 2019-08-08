@@ -15,14 +15,20 @@ class App extends Component {
     super(props);
 
     this.state = {
-      selectedAlertId: 0
+      selectedAlertId: -1,
+      alertInputState: false
     };
 
     this.handleAlertSelectionChange = this.handleAlertSelectionChange.bind(this);
+    this.handleAlertInputStateChange = this.handleAlertInputStateChange.bind(this);
   }
 
   handleAlertSelectionChange = (id) => {
     this.setState({selectedAlertId: id});
+  }
+
+  handleAlertInputStateChange = () => {
+    this.setState({alertInputState: !this.state.alertInputState});
   }
 
   render() {
@@ -31,10 +37,12 @@ class App extends Component {
         <Container>
           <Row>
             <Col>
-              <AlertInput />
+              <AlertInput onAlertInputStateChange={this.handleAlertInputStateChange} />
             </Col>
             <Col>
-              <AlertList onAlertSelectionChange={this.handleAlertSelectionChange} />
+              <AlertList 
+                alertInputState={this.state.alertInputState} 
+                onAlertSelectionChange={this.handleAlertSelectionChange} />
             </Col>
           </Row>
           <Row>

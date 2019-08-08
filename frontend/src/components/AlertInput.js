@@ -37,6 +37,8 @@ class AlertInput extends Component {
             alertURL: this.state.alertURL,
             httpMethod: this.state.httpMethod,
             controlPeriod: this.state.controlPeriod
+        }).then((resp) => {
+            this.props.onAlertInputStateChange();
         }).catch((err) => {
             console.error("Alert save error: " + err);
         })

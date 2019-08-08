@@ -1,6 +1,7 @@
 package yte.intern.alertapplication.entity;
 
 import lombok.*;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,7 +18,10 @@ public class Alert {
     private Long id;
 
     private String name;
+
+    @URL
     private String url;
+
     private String method;
     private Long period;
     private LocalDateTime nextDeadline;

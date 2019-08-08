@@ -6,16 +6,12 @@ class AlertList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            alerts: [
-                { alertId: 301, alertName: "Google Status", alertURL: "http://www.google.com", httpMethod: "get", controlPeriod: 1 },
-                { alertId: 302, alertName: "Facebook Status", alertURL: "http://www.facebook.com", httpMethod: "get", controlPeriod: 1 },
-            ]
+            alerts: []
         };
-
-        console.log(props);
     }
 
     handleAlertList = () => {
+        console.log("handle alert list");
         axios.get(
             "http://localhost:8080/alerts"
         ).then((resp) => {
@@ -27,6 +23,18 @@ class AlertList extends Component {
 
     handleAlertSelectionChange = (index) => {
         this.props.onAlertSelectionChange(this.state.alerts[index].alertId);
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.alertInputState !== prevProps.alertInputState) {
+            console.log("component update");
+            this.handleAlertList();
+        }
+    }
+
+    componentDidMount() {
+        console.log("component mount");
+        this.handleAlertList();
     }
 
     render() {

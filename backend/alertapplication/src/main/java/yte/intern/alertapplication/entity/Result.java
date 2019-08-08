@@ -25,9 +25,9 @@ public class Result {
 
     private LocalDateTime requestedAt;
     private Long elapsed;
-    private Long statusCode;
+    private Integer statusCode;
 
-    public Result(Alert alert, LocalDateTime requestedAt, Long elapsed, Long statusCode) {
+    public Result(Alert alert, LocalDateTime requestedAt, Long elapsed, Integer statusCode) {
         this.alert = alert;
         this.requestedAt = requestedAt;
         this.elapsed = elapsed;
