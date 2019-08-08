@@ -17,9 +17,9 @@ class AlertList extends Component {
 
     handleAlertList = () => {
         axios.get(
-            "http://localhost:8090/alerts"
+            "http://localhost:8080/alerts"
         ).then((resp) => {
-            this.setState({ alerts: resp.data.alerts });
+            this.setState({ alerts: resp.data });
         }).catch((err) => {
             console.error("handleAlertList failed: " + err);
         });
@@ -30,41 +30,44 @@ class AlertList extends Component {
     }
 
     render() {
-        var alertCards = this.state.alerts.map((elem, index) => {
-            return (
-                <Card key={index}>
-                    <Accordion.Toggle 
-                        as={Card.Header} 
-                        eventKey={index} 
-                        onClick={ () => { this.handleAlertSelectionChange(index); }}
+        var alertCards = "";
+        if (this.state.alerts) {
+            alertCards = this.state.alerts.map((elem, index) => {
+                return (
+                    <Card key={index}>
+                        <Accordion.Toggle
+                            as={Card.Header}
+                            eventKey={index}
+                            onClick={() => { this.handleAlertSelectionChange(index); }}
                         >
-                        <code>#{index + 1}</code> {elem.alertName}
-                    </Accordion.Toggle>
-                    <Accordion.Collapse eventKey={index}>
-                        <Card.Body>
-                            <Table bordered striped hover>
-                                <thead>
-                                    <tr>
-                                        <th>Alert ID</th>
-                                        <th>Alert URL</th>
-                                        <th>HTTP Method</th>
-                                        <th>Control Period</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>{elem.alertId}</td>
-                                        <td>{elem.alertURL}</td>
-                                        <td>{elem.httpMethod}</td>
-                                        <td>{elem.controlPeriod}</td>
-                                    </tr>
-                                </tbody>
-                            </Table>
-                        </Card.Body>
-                    </Accordion.Collapse>
-                </Card>
-            )
-        })
+                            <code>#{index + 1}</code> {elem.alertName}
+                        </Accordion.Toggle>
+                        <Accordion.Collapse eventKey={index}>
+                            <Card.Body>
+                                <Table bordered striped hover>
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Alarm URL</th>
+                                            <th>HTTP Metodu</th>
+                                            <th>Kontrol Periyodu</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{elem.alertId}</td>
+                                            <td>{elem.alertURL}</td>
+                                            <td>{elem.httpMethod}</td>
+                                            <td>{elem.controlPeriod}</td>
+                                        </tr>
+                                    </tbody>
+                                </Table>
+                            </Card.Body>
+                        </Accordion.Collapse>
+                    </Card>
+                )
+            })
+        }
 
         return (
             <Container className="AlertListBox">

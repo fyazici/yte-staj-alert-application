@@ -1,45 +1,42 @@
-import React, {Component} from "react"
-import {Form, Row, Col, Button} from "react-bootstrap"
+import React, { Component } from "react"
+import { Form, Row, Col, Button, InputGroup } from "react-bootstrap"
 import axios from "axios"
+
 
 class AlertInput extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            alertName: "", 
+            alertName: "",
             alertURL: "",
-            httpMethod: "",
+            httpMethod: "GET",
             controlPeriod: 1
         };
     }
 
     handleAlertNameChange = (event) => {
-        this.setState({alertName: event.target.value});
-        console.log(event.target.value);
+        this.setState({ alertName: event.target.value });
     }
 
     handleAlertURLChange = (event) => {
-        this.setState({alertURL: event.target.value});
-        console.log(event.target.value);
+        this.setState({ alertURL: event.target.value });
     }
 
     handleHTTPMethodChange = (event) => {
-        this.setState({httpMethod: event.target.value});
-        console.log(event.target.value);
+        this.setState({ httpMethod: event.target.value });
     }
 
     handleControlPeriodChange = (event) => {
-        this.setState({controlPeriod: event.target.value});
-        console.log(event.target.value);
+        this.setState({ controlPeriod: event.target.value });
     }
 
     handleAlertSave = () => {
-        axios.post("http://localhost:8090/alerts", {
-            name: this.state.alertName,
-            url: this.state.alertURL,
-            method: this.state.httpMethod,
-            period: this.state.controlPeriod
+        axios.post("http://localhost:8080/alerts", { 
+            alertName: this.state.alertName,
+            alertURL: this.state.alertURL,
+            httpMethod: this.state.httpMethod,
+            controlPeriod: this.state.controlPeriod
         }).catch((err) => {
             console.error("Alert save error: " + err);
         })
@@ -52,13 +49,13 @@ class AlertInput extends Component {
                     <Form.Group as={Row}>
                         <Form.Label column sm={4}>Adı:</Form.Label>
                         <Col>
-                            <Form.Control type="text" value={this.state.alertName} onChange={this.handleAlertNameChange}/>
+                            <Form.Control type="text" value={this.state.alertName} onChange={this.handleAlertNameChange} />
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row}>
                         <Form.Label column sm={4}>URL:</Form.Label>
                         <Col>
-                            <Form.Control type="text" value={this.state.alertURL} onChange={this.handleAlertURLChange}/>
+                            <Form.Control type="text" value={this.state.alertURL} onChange={this.handleAlertURLChange} />
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row}>
@@ -73,7 +70,12 @@ class AlertInput extends Component {
                     <Form.Group as={Row}>
                         <Form.Label column sm={4}>Kontrol Periyodu:</Form.Label>
                         <Col>
-                            <Form.Control type="number" min="1" value={this.state.controlPeriod} onChange={this.handleControlPeriodChange} />
+                            <InputGroup>
+                                <Form.Control type="number" min="1" value={this.state.controlPeriod} onChange={this.handleControlPeriodChange} />
+                                <InputGroup.Append>
+                                    <InputGroup.Text>sn</InputGroup.Text>
+                                </InputGroup.Append>
+                            </InputGroup>
                         </Col>
                     </Form.Group>
                     <Button variant="primary" size="md" block onClick={this.handleAlertSave}>Kaydet</Button>
