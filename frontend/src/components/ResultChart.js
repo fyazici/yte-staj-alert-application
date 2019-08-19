@@ -18,7 +18,7 @@ class ResultChart extends Component {
     }
 
     ResultChartHeader = [
-        { type: "date", id: "timestamp", label: "Request Time" },
+        { type: "datetime", id: "timestamp", label: "Request Time" },
         { type: "number", id: "success", label: "Success" }
     ];
 
