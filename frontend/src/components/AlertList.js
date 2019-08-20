@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { Container, Button, Accordion, Table, Card } from "react-bootstrap";
 import axios from "axios"
+import { Link } from "react-router-dom"
 
 class AlertList extends Component {
     constructor(props) {
@@ -11,7 +12,6 @@ class AlertList extends Component {
     }
 
     handleAlertList = () => {
-        console.log("handle alert list");
         axios.get(
             "http://localhost:8080/alerts"
         ).then((resp) => {
@@ -27,13 +27,11 @@ class AlertList extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (this.props.alertInputState !== prevProps.alertInputState) {
-            console.log("component update");
             this.handleAlertList();
         }
     }
 
     componentDidMount() {
-        console.log("component mount");
         this.handleAlertList();
     }
 
@@ -45,9 +43,7 @@ class AlertList extends Component {
                     <Card key={index}>
                         <Accordion.Toggle
                             as={Card.Header}
-                            eventKey={index}
-                            onClick={() => { this.handleAlertSelectionChange(index); }}
-                        >
+                            eventKey={index}>
                             <code>#{index + 1}</code> {elem.alertName}
                         </Accordion.Toggle>
                         <Accordion.Collapse eventKey={index}>
@@ -63,7 +59,7 @@ class AlertList extends Component {
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>{elem.alertId}</td>
+                                            <td><Link to={"/alerts/" + elem.alertId}>{elem.alertId}</Link></td>
                                             <td>{elem.alertURL}</td>
                                             <td>{elem.httpMethod}</td>
                                             <td>{elem.controlPeriod}</td>

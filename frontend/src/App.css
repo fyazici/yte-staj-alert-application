@@ -1,26 +1,18 @@
-.App {
-  background: #5f505f;
-  padding: 20px;
-  height: 100%;
-  box-sizing: border-box;
-  height: 100%;
-  width: 100%;
-  min-width: 30rem;
-  overflow: auto;
+html, body {
+  background: #e0f0e2;
 }
 
 .AlertInputBox {
   border: 1px solid #dfdfdf;
   border-radius: 4px;
   background: #ffffff;
-  margin: 10px 0;
+  margin: 10px;
   padding: 20px;
   box-shadow: 0 0 10px 0 #000;
-  min-width: 300pt;
 }
 
 .AlertListBox {
-  margin: 10px 0;
+  margin: 10px auto;
   padding: 20px;
   border-radius: 4px;
   border: 1px solid #dfdfdf;
@@ -35,7 +27,7 @@
 }
 
 .ResultChartBox {
-  margin: 10px 0;
+  margin: 10px auto;
   padding: 20px;
   border-radius: 4px;
   border: 1px solid #dfdfdf;

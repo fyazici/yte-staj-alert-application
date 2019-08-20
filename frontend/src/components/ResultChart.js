@@ -7,22 +7,29 @@ class ResultChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            resultData: [
-                this.ResultChartHeader
-            ]
+            alertData: {},
+            resultData: []
         };
-
-        if (!this.props.alertId) {
-            this.props.alertId = -1;
-        }
     }
 
-    ResultChartHeader = [
+    SuccessChartHeader = [
         { type: "datetime", id: "timestamp", label: "Request Time" },
         { type: "number", id: "success", label: "Success" }
     ];
 
+    ElapsedChartHeader = [
+        { type: "datetime", id: "timestamp", label: "Request Time" },
+        { type: "number", id: "elapsed", label: "RTT (ms)" }
+    ];
+
     componentDidMount() {
+        axios.get(
+            "http://localhost:8080/alert/" + this.props.alertId
+        ).then((resp) => {
+            this.setState({alertData: resp.data});
+        }).catch((err) => {
+            console.error("Error on axios alert get: " + err);
+        })
         this.refreshTimer = setInterval(this.retrieveChartData, 1000);
     }
 
@@ -41,13 +48,9 @@ class ResultChart extends Component {
             axios.get(
                 "http://localhost:8080/results/" + this.props.alertId
             ).then((resp) => {
-                var newResults = resp.data.map((elem, index) => {
-                    return [new Date(elem.timestamp), elem.success ? 1 : 0];
-                });
-                var newResultData = [this.ResultChartHeader].concat(newResults);
-                this.setState({ resultData: newResultData });
+                this.setState({ resultData: resp.data });
             }).catch((err) => {
-                console.error("Error on axios get: " + err);
+                console.error("Error on axios result get: " + err);
             });
         }
     }
@@ -55,10 +58,15 @@ class ResultChart extends Component {
     render() {
         return (
             <Container className="ResultChartBox">
+                <h3>Results for scheduled alert named: <code>{this.state.alertData.alertName}</code></h3>
                 <Chart
                     chartType="ScatterChart"
                     loader={<div>Loading Chart</div>}
-                    data={this.state.resultData}
+                    data={
+                        [this.SuccessChartHeader].concat(this.state.resultData.map((resultElem) => { 
+                            return [new Date(resultElem.timestamp), resultElem.success ? 1 : 0]
+                        }))
+                    }
                     options={{
                         chart: {
                             title: "Request Results",
@@ -66,6 +74,25 @@ class ResultChart extends Component {
                         vAxis: {
                             minValue: 0,
                             maxValue: 1
+                        }
+                    }}
+                />
+                <br />
+                <Chart
+                    chartType="ScatterChart"
+                    loader={<div>Loading Chart</div>}
+                    data={
+                        [this.ElapsedChartHeader].concat(this.state.resultData.map((resultElem) => { 
+                            return [new Date(resultElem.timestamp), resultElem.elapsed]
+                        }))
+                    }
+                    options={{
+                        chart: {
+                            title: "Request Results",
+                        },
+                        vAxis: {
+                            minValue: 0,
+                            maxValue: 1000
                         }
                     }}
                 />

@@ -25,6 +25,11 @@ public class AlertController {
         return alertService.getAlerts();
     }
 
+    @GetMapping("/alert/{alertId}")
+    public AlertDTO getAlertById(@PathVariable Long alertId) {
+        return alertService.getAlertById(alertId);
+    }
+
     @GetMapping("/results/{alertId}")
     public List<ResultDTO> getResultsById(@PathVariable Long alertId) {
         return alertService.getResultsById(alertId);

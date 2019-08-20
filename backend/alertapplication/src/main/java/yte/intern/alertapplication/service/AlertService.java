@@ -26,6 +26,18 @@ public class AlertService {
         ));
     }
 
+    public AlertDTO getAlertById(Long alertId) {
+        Optional<Alert> maybeAlert = alertRepository.findById(alertId);
+        if (maybeAlert.isEmpty()) {
+            return null;
+        } else {
+            Alert alert = maybeAlert.get();
+            return new AlertDTO(
+                    alert.getId(), alert.getName(), alert.getUrl(), alert.getMethod(), alert.getPeriod()
+            );
+        }
+    }
+
     public List<AlertDTO> getAlerts() {
         List<Alert> alerts = alertRepository.findAll();
         return alerts.stream().map(alert -> new AlertDTO(
@@ -34,12 +46,12 @@ public class AlertService {
     }
 
     public List<ResultDTO> getResultsById(Long alertId) {
-        Optional<Alert> alert = alertRepository.findById(alertId);
-        if (alert.isEmpty()) {
+        Optional<Alert> maybeAlert = alertRepository.findById(alertId);
+        if (maybeAlert.isEmpty()) {
             return new ArrayList<>();
         } else {
-            return alert.get().getResults().stream().map((result) -> new ResultDTO(
-                    result.getRequestedAt().toString(), result.getStatusCode().equals(200)
+            return maybeAlert.get().getResults().stream().map((result) -> new ResultDTO(
+                    result.getRequestedAt().toString(), result.getStatusCode().equals(200), result.getElapsed()
             )).collect(Collectors.toList());
         }
     }
