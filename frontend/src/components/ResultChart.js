@@ -35,6 +35,7 @@ class ResultChart extends Component {
 
     componentWillUnmount() {
         clearInterval(this.refreshTimer);
+        this.refreshTimer = null;
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -48,7 +49,9 @@ class ResultChart extends Component {
             axios.get(
                 "http://localhost:8080/results/" + this.props.alertId
             ).then((resp) => {
-                this.setState({ resultData: resp.data });
+                if (this.refreshTimer) {
+                    this.setState({ resultData: resp.data });
+                }
             }).catch((err) => {
                 console.error("Error on axios result get: " + err);
             });

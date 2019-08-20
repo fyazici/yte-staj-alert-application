@@ -1,5 +1,5 @@
-import React, { Component } from "react"
-import { Form, Row, Col, Button, InputGroup } from "react-bootstrap"
+import React, { Component, useRef } from "react"
+import { Form, Row, Col, Button, InputGroup, Container, Alert } from "react-bootstrap"
 import axios from "axios"
 
 
@@ -11,7 +11,10 @@ class AlertInput extends Component {
             alertName: "",
             alertURL: "",
             httpMethod: "GET",
-            controlPeriod: 1
+            controlPeriod: 1,
+            saveStatusText: "",
+            saveStatusVariant: "",
+            saveStatusOverlayShown: false
         };
     }
 
@@ -32,22 +35,32 @@ class AlertInput extends Component {
     }
 
     handleAlertSave = () => {
-        axios.post("http://localhost:8080/alerts", { 
+        axios.post("http://localhost:8080/alerts", {
             alertName: this.state.alertName,
             alertURL: this.state.alertURL,
             httpMethod: this.state.httpMethod,
             controlPeriod: this.state.controlPeriod
         }).then((resp) => {
-            this.props.onAlertInputStateChange();
+            this.setState({ saveStatusText: "Alarm kaydetme başarılı!", saveStatusVariant: "success", saveStatusOverlayShown: true });
         }).catch((err) => {
+            this.setState({ saveStatusText: "Alarm kaydetme başarısız!", saveStatusVariant: "danger", saveStatusOverlayShown: true });
             console.error("Alert save error: " + err);
         })
     }
 
     render() {
         return (
-            <div>
+            <Container>
                 <Form className="AlertInputBox">
+                    <Alert
+                        show={this.state.saveStatusOverlayShown}
+                        variant={this.state.saveStatusVariant}
+                        dismissible="true"
+                        onClose={() => this.setState({ saveStatusOverlayShown: false })}>
+                        <Col>
+                            {this.state.saveStatusText}
+                        </Col>
+                    </Alert>
                     <Form.Group as={Row}>
                         <Form.Label column sm={4}>Adı:</Form.Label>
                         <Col>
@@ -82,7 +95,7 @@ class AlertInput extends Component {
                     </Form.Group>
                     <Button variant="primary" size="md" block onClick={this.handleAlertSave}>Kaydet</Button>
                 </Form>
-            </div>
+            </Container>
         );
     }
 }

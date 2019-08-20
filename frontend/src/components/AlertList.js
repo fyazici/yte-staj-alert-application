@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { Container, Button, Accordion, Table, Card } from "react-bootstrap";
+import { Container, Button, Accordion, Table, Card, Alert } from "react-bootstrap";
 import axios from "axios"
 import { Link } from "react-router-dom"
 
@@ -17,6 +17,7 @@ class AlertList extends Component {
         ).then((resp) => {
             this.setState({ alerts: resp.data });
         }).catch((err) => {
+            this.setState({ alerts: null });
             console.error("handleAlertList failed: " + err);
         });
     }
@@ -71,6 +72,12 @@ class AlertList extends Component {
                     </Card>
                 )
             })
+        } else {
+            alertCards = (
+                <Alert variant="danger">
+                    Alarm listesi getirilemedi!
+                </Alert>
+            )
         }
 
         return (
