@@ -61,7 +61,7 @@ class AlertList extends Component {
                                     <tbody>
                                         <tr>
                                             <td><Link to={"/alerts/" + elem.alertId}>{elem.alertId}</Link></td>
-                                            <td>{elem.alertURL}</td>
+                                            <td><a href={elem.alertURL}>{elem.alertURL}</a></td>
                                             <td>{elem.httpMethod}</td>
                                             <td>{elem.controlPeriod}</td>
                                         </tr>

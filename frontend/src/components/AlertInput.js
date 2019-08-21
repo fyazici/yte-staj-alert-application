@@ -1,4 +1,4 @@
-import React, { Component, useRef } from "react"
+import React, { Component } from "react"
 import { Form, Row, Col, Button, InputGroup, Container, Alert } from "react-bootstrap"
 import axios from "axios"
 
@@ -64,13 +64,13 @@ class AlertInput extends Component {
                     <Form.Group as={Row}>
                         <Form.Label column sm={4}>Adı:</Form.Label>
                         <Col>
-                            <Form.Control type="text" placeholder="test.xyz Status" value={this.state.alertName} onChange={this.handleAlertNameChange} />
+                            <Form.Control type="text" required="true" placeholder="test.xyz Status" value={this.state.alertName} onChange={this.handleAlertNameChange} />
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row}>
                         <Form.Label column sm={4}>URL:</Form.Label>
                         <Col>
-                            <Form.Control type="text" placeholder="http://test.xyz" value={this.state.alertURL} onChange={this.handleAlertURLChange} />
+                            <Form.Control type="url" required="true" placeholder="http://test.xyz" value={this.state.alertURL} onChange={this.handleAlertURLChange} />
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row}>
