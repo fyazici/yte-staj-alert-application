@@ -1,11 +1,11 @@
 package yte.intern.alertapplication.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+@EqualsAndHashCode
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class AlertDTO {
     private Long alertId;
     private String alertName;

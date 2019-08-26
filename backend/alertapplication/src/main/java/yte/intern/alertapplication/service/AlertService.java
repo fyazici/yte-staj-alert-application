@@ -7,6 +7,7 @@ import yte.intern.alertapplication.dto.ResultDTO;
 import yte.intern.alertapplication.entity.Alert;
 import yte.intern.alertapplication.repository.AlertRepository;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +18,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AlertService {
 
+    private final Clock clock;
     private final AlertRepository alertRepository;
 
-    public void createAlert(AlertDTO alertDTO) {
-        alertRepository.save(new Alert(
+    public Alert createAlert(AlertDTO alertDTO) {
+        Alert alert = alertRepository.save(new Alert(
                 alertDTO.getAlertName(), alertDTO.getAlertURL(), alertDTO.getHttpMethod(), alertDTO.getControlPeriod(),
-                LocalDateTime.now().plusSeconds(alertDTO.getControlPeriod())
+                LocalDateTime.now(clock).plusSeconds(alertDTO.getControlPeriod())
         ));
+
+        return alert;
     }
 
     public AlertDTO getAlertById(Long alertId) {
@@ -38,8 +42,20 @@ public class AlertService {
         }
     }
 
-    public List<AlertDTO> getAlerts() {
-        List<Alert> alerts = alertRepository.findAll();
+    public AlertDTO getAlertByName(String alertName) {
+        Optional<Alert> maybeAlert = alertRepository.findByName(alertName);
+        if (maybeAlert.isEmpty()) {
+            return null;
+        } else {
+            Alert alert = maybeAlert.get();
+            return new AlertDTO(
+                    alert.getId(), alert.getName(), alert.getUrl(), alert.getMethod(), alert.getPeriod()
+            );
+        }
+    }
+
+    public List<AlertDTO> getAlerts(String alertNameLike) {
+        List<Alert> alerts = alertRepository.findByNameIgnoreCaseContaining(alertNameLike);
         return alerts.stream().map(alert -> new AlertDTO(
                 alert.getId(), alert.getName(), alert.getUrl(), alert.getMethod(), alert.getPeriod()
         )).collect(Collectors.toList());

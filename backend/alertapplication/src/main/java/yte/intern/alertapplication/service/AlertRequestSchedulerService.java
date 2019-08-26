@@ -15,29 +15,30 @@ import yte.intern.alertapplication.entity.Alert;
 import yte.intern.alertapplication.entity.Result;
 import yte.intern.alertapplication.repository.AlertRepository;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-@EnableScheduling
 @RequiredArgsConstructor
 public class AlertRequestSchedulerService {
 
+    private final Clock clock;
     private final AlertRepository alertRepository;
     private final RestTemplate restTemplate;
 
     @Scheduled(fixedDelay = 1000)
     public void scheduleRequests() {
-        List<Alert> alerts = alertRepository.findByNextDeadlineLessThan(LocalDateTime.now());
+        List<Alert> alerts = alertRepository.findByNextDeadlineLessThan(LocalDateTime.now(clock));
         alerts.forEach(this::requestWorker);
     }
 
     @Async
     @SuppressWarnings("WeakerAccess")
     public void requestWorker(Alert alert) {
-        System.out.println(LocalDateTime.now().toString() + " (" + alert.getName() + ") async request worker running");
+        System.out.println(LocalDateTime.now(clock).toString() + " (" + alert.getName() + ") async request worker running");
 
-        LocalDateTime requestTime = LocalDateTime.now();
+        LocalDateTime requestTime = LocalDateTime.now(clock);
         alert.setNextDeadline(requestTime.plusSeconds(alert.getPeriod()));
 
         Result result = new Result();

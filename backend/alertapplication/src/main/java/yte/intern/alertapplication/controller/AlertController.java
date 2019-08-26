@@ -21,8 +21,8 @@ public class AlertController {
     }
 
     @GetMapping("/alerts")
-    public List<AlertDTO> getAlerts() {
-        return alertService.getAlerts();
+    public List<AlertDTO> getAlerts(@RequestParam(required = false) final String alertNameLike) {
+        return alertService.getAlerts((alertNameLike == null) ? "" : alertNameLike);
     }
 
     @GetMapping("/alert/{alertId}")
