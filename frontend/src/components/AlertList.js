@@ -56,14 +56,16 @@ class AlertList extends Component {
                                             <th>Alarm URL</th>
                                             <th>HTTP Metodu</th>
                                             <th>Kontrol Periyodu</th>
+                                            <th>Sonuçlar</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td><Link to={"/alerts/" + elem.alertId}>{elem.alertId}</Link></td>
+                                            <td>{elem.alertId}</td>
                                             <td><a href={elem.alertURL}>{elem.alertURL}</a></td>
                                             <td>{elem.httpMethod}</td>
                                             <td>{elem.controlPeriod}</td>
+                                            <td><Link to={"/alerts/" + elem.alertId}>[Sonuçları Göster]</Link></td>
                                         </tr>
                                     </tbody>
                                 </Table>
