@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import Chart from 'react-google-charts';
 import { Container } from 'react-bootstrap';
+import SockJsClient from 'react-stomp';
 
 class ResultChart extends Component {
     constructor(props) {
@@ -23,25 +24,29 @@ class ResultChart extends Component {
     ];
 
     componentDidMount() {
-        axios.get(
-            "http://localhost:8080/alert/" + this.props.alertId
-        ).then((resp) => {
-            this.setState({alertData: resp.data});
-        }).catch((err) => {
-            console.error("Error on axios alert get: " + err);
-        })
-        this.refreshTimer = setInterval(this.retrieveChartData, 1000);
+        this.retrieveAlertData();
+        this.retrieveChartData();
     }
 
-    componentWillUnmount() {
-        clearInterval(this.refreshTimer);
-        this.refreshTimer = null;
+    handleSocketData = (msg) => {
+        this.setState({resultData: this.state.resultData.concat([msg])});
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (this.props !== prevProps) {
+            this.retrieveAlertData();
             this.retrieveChartData();
         }
+    }
+
+    retrieveAlertData = () => {
+        axios.get(
+            "http://localhost:8080/alert/" + this.props.alertId
+        ).then((resp) => {
+            this.setState({ alertData: resp.data });
+        }).catch((err) => {
+            console.error("Error on axios alert get: " + err);
+        })
     }
 
     retrieveChartData = () => {
@@ -49,9 +54,7 @@ class ResultChart extends Component {
             axios.get(
                 "http://localhost:8080/results/" + this.props.alertId
             ).then((resp) => {
-                if (this.refreshTimer) {
-                    this.setState({ resultData: resp.data });
-                }
+                this.setState({ resultData: this.state.resultData.concat(resp.data) });
             }).catch((err) => {
                 console.error("Error on axios result get: " + err);
             });
@@ -61,16 +64,21 @@ class ResultChart extends Component {
     render() {
         return (
             <Container className="ResultChartBox">
-                <h3>Results for scheduled alert named: <code>{this.state.alertData.alertName}</code></h3>
+                <SockJsClient url='http://localhost:8080/alertapplication-ws' topics={['/topic/' + this.props.alertId]}
+                    onMessage={ (msg) => this.handleSocketData(msg) }
+                    ref={ (client) => { this.clientRef = client }} />
+                <h3><code>{this.state.alertData.alertName}</code> isimli alarm sonuçları:</h3>
                 <Chart
                     chartType="ScatterChart"
                     loader={<div>Loading Chart</div>}
+                    wi
                     data={
                         [this.SuccessChartHeader].concat(this.state.resultData.map((resultElem) => { 
                             return [new Date(resultElem.timestamp), resultElem.success ? 1 : 0]
                         }))
                     }
                     options={{
+                        chartArea: { width: "75%" },
                         chart: {
                             title: "Request Results",
                         },
@@ -90,6 +98,7 @@ class ResultChart extends Component {
                         }))
                     }
                     options={{
+                        chartArea: { width: "75%" },
                         chart: {
                             title: "Request Results",
                         },

@@ -7,23 +7,41 @@ class AlertList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            alerts: []
+            alerts: [],
+            showError: false,
+            errorMessage: ""
         };
     }
 
     handleAlertList = () => {
+        this.setState({showError: false});
         axios.get(
             "http://localhost:8080/alerts"
         ).then((resp) => {
             this.setState({ alerts: resp.data });
         }).catch((err) => {
-            this.setState({ alerts: null });
+            this.setState({ 
+                alerts: null,
+                showError: true,
+                errorMessage: "Alarm listesi getirilemedi!"
+            });
             console.error("handleAlertList failed: " + err);
         });
     }
 
-    handleAlertSelectionChange = (index) => {
-        this.props.onAlertSelectionChange(this.state.alerts[index].alertId);
+    handleAlertDelete = (alertId) => {
+        this.setState({showError: false});
+        axios.delete(
+            "http://localhost:8080/alert/" + alertId
+        ).then((resp) => {
+            this.handleAlertList();
+        }).catch((err) => {
+            this.setState({
+                showError: true,
+                errorMessage: "Alarm silinemedi!"
+            });
+            console.error("handleAlertDelete failed: " + err);
+        })
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -55,8 +73,9 @@ class AlertList extends Component {
                                             <th>ID</th>
                                             <th>Alarm URL</th>
                                             <th>HTTP Metodu</th>
-                                            <th>Kontrol Periyodu</th>
+                                            <th>Kontrol Periyodu (sn)</th>
                                             <th>Sonuçlar</th>
+                                            <th>İşlevler</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -65,7 +84,10 @@ class AlertList extends Component {
                                             <td><a href={elem.alertURL}>{elem.alertURL}</a></td>
                                             <td>{elem.httpMethod}</td>
                                             <td>{elem.controlPeriod}</td>
-                                            <td><Link to={"/alerts/" + elem.alertId}>[Sonuçları Göster]</Link></td>
+                                            <td><Link to={"/alerts/" + elem.alertId}><Button variant="info">Sonuçları Göster</Button></Link></td>
+                                            <td><Button variant="danger" onClick={() => {
+                                                this.handleAlertDelete(elem.alertId);
+                                            }}>Sil</Button></td>
                                         </tr>
                                     </tbody>
                                 </Table>
@@ -74,17 +96,18 @@ class AlertList extends Component {
                     </Card>
                 )
             })
-        } else {
-            alertCards = (
-                <Alert variant="danger">
-                    Alarm listesi getirilemedi!
-                </Alert>
-            )
         }
 
         return (
             <Container className="AlertListBox">
                 <Container className="AlertListViewBox">
+                    <Alert 
+                        show={this.state.showError}
+                        variant="danger" 
+                        dismissible={true} 
+                        onClose={() => { this.setState({showError: false}) }}>
+                        {this.state.errorMessage}
+                    </Alert>
                     <Accordion>
                         {alertCards}
                     </Accordion>

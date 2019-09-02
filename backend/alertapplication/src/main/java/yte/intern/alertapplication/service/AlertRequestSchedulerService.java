@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.jni.Local;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import yte.intern.alertapplication.dto.ResultDTO;
 import yte.intern.alertapplication.entity.Alert;
 import yte.intern.alertapplication.entity.Result;
 import yte.intern.alertapplication.repository.AlertRepository;
@@ -26,6 +28,7 @@ public class AlertRequestSchedulerService {
     private final Clock clock;
     private final AlertRepository alertRepository;
     private final RestTemplate restTemplate;
+    private final SimpMessagingTemplate brokerMessagingTemplate;
 
     @Scheduled(fixedDelay = 1000)
     public void scheduleRequests() {
@@ -67,5 +70,10 @@ public class AlertRequestSchedulerService {
             alert.getResults().add(result);
             alertRepository.save(alert);
         }
+
+        ResultDTO resultDTO = new ResultDTO(
+                result.getRequestedAt().toString(), result.getStatusCode().equals(200), result.getElapsed());
+
+        brokerMessagingTemplate.convertAndSend("/topic/" + result.getAlert().getId(), resultDTO);
     }
 }

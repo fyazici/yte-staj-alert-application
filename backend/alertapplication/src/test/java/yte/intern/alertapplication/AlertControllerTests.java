@@ -4,17 +4,26 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureWebClient;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import yte.intern.alertapplication.controller.AlertController;
 import yte.intern.alertapplication.dto.AlertDTO;
 import yte.intern.alertapplication.dto.ResultDTO;
@@ -28,13 +37,18 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(AlertController.class)
-@AutoConfigureWebClient
+@ContextConfiguration(classes = {
+        AlertController.class,
+        AlertControllerTestConfiguration.class
+})
+@AutoConfigureRestDocs
 public class AlertControllerTests {
 
     private final LocalDateTime LOCAL_DATETIME = LocalDateTime.of(2019, 1, 1, 0, 0, 0);
@@ -140,5 +154,14 @@ public class AlertControllerTests {
         Assert.assertEquals(LOCAL_DATETIME.toString(), resultDTOS[0].getTimestamp());
 
         verify(alertService, times(1)).getResultsById(argThat(aLong -> aLong.equals(1L)));
+    }
+
+    @Test
+    public void givenAlerts_whenDeleteAlertById_thenAlertServiceDeleteCalled() throws Exception {
+        MvcResult reqResult = mvc.perform(delete("/alert/{alertId}", "1"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        verify(alertService, times(1)).deleteAlert(argThat(aLong -> aLong.equals(1L)));
     }
 }

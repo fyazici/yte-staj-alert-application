@@ -22,7 +22,7 @@ html, body {
 }
 
 .AlertListViewBox {
-  margin: 10px 0;
+  margin: 10px 0 10px 0;
   max-height: 50vh;
   overflow-y: auto;
 }

@@ -55,7 +55,7 @@ class AlertInput extends Component {
                     <Alert
                         show={this.state.saveStatusOverlayShown}
                         variant={this.state.saveStatusVariant}
-                        dismissible="true"
+                        dismissible={true}
                         onClose={() => this.setState({ saveStatusOverlayShown: false })}>
                         <Col>
                             {this.state.saveStatusText}

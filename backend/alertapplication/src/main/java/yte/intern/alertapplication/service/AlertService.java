@@ -71,4 +71,10 @@ public class AlertService {
             )).collect(Collectors.toList());
         }
     }
+
+    public void deleteAlert(Long alertId) {
+        if (alertId != null) {
+            alertRepository.deleteById(alertId);
+        }
+    }
 }

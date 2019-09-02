@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.AdditionalAnswers;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.notNull;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = AlertService.class)
@@ -201,6 +202,20 @@ public class AlertServiceTests {
         Assert.assertEquals(LOCAL_DATETIME, LocalDateTime.parse(result.getTimestamp()));
         Assert.assertEquals(true, result.getSuccess());
         Assert.assertEquals(100L, result.getElapsed().longValue());
+    }
+
+    @Test
+    public void whenDeleteAlertById_thenDeleteCalled() {
+        // given
+        doNothing().when(alertRepository).deleteById(notNull());
+
+        // when
+        alertService.deleteAlert(1L);
+
+        // then
+        ArgumentCaptor<Long> captor = ArgumentCaptor.forClass(Long.class);
+        verify(alertRepository, times(1)).deleteById(captor.capture());
+        Assert.assertEquals(1L, captor.getValue().longValue());
     }
 
 }

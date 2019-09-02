@@ -15,14 +15,19 @@ public class AlertController {
 
     private final AlertService alertService;
 
+    @GetMapping("/alerts")
+    public List<AlertDTO> getAlerts(@RequestParam(required = false) final String alertNameLike) {
+        return alertService.getAlerts((alertNameLike == null) ? "" : alertNameLike);
+    }
+
     @PostMapping("/alerts")
     public void createAlert(@RequestBody AlertDTO alertDTO) {
         alertService.createAlert(alertDTO);
     }
 
-    @GetMapping("/alerts")
-    public List<AlertDTO> getAlerts(@RequestParam(required = false) final String alertNameLike) {
-        return alertService.getAlerts((alertNameLike == null) ? "" : alertNameLike);
+    @DeleteMapping("/alert/{alertId}")
+    public void deleteAlertById(@PathVariable Long alertId) {
+        alertService.deleteAlert(alertId);
     }
 
     @GetMapping("/alert/{alertId}")
