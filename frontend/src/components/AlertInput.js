@@ -8,6 +8,7 @@ class AlertInput extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            validated: false,
             alertName: "",
             alertURL: "",
             httpMethod: "GET",
@@ -35,23 +36,27 @@ class AlertInput extends Component {
     }
 
     handleAlertSave = () => {
-        axios.post("http://localhost:8080/alerts", {
-            alertName: this.state.alertName,
-            alertURL: this.state.alertURL,
-            httpMethod: this.state.httpMethod,
-            controlPeriod: this.state.controlPeriod
-        }).then((resp) => {
-            this.setState({ saveStatusText: "Alarm kaydetme başarılı!", saveStatusVariant: "success", saveStatusOverlayShown: true });
-        }).catch((err) => {
-            this.setState({ saveStatusText: "Alarm kaydetme başarısız!", saveStatusVariant: "danger", saveStatusOverlayShown: true });
-            console.error("Alert save error: " + err);
-        })
+        var form = this.refs.AlertInputForm;
+        if (form.checkValidity()) {
+            axios.post("http://localhost:8080/alerts", {
+                alertName: this.state.alertName,
+                alertURL: this.state.alertURL,
+                httpMethod: this.state.httpMethod,
+                controlPeriod: this.state.controlPeriod
+            }).then((resp) => {
+                this.setState({ saveStatusText: "Alarm kaydetme başarılı!", saveStatusVariant: "success", saveStatusOverlayShown: true });
+            }).catch((err) => {
+                this.setState({ saveStatusText: "Alarm kaydetme başarısız! (arka uç hatası)", saveStatusVariant: "danger", saveStatusOverlayShown: true });
+                console.error("Alert save error: " + err);
+            })
+        }
+        this.setState({ validated: true });
     }
 
     render() {
         return (
             <Container>
-                <Form className="AlertInputBox">
+                <Form noValidate validated={this.state.validated} className="AlertInputBox" ref="AlertInputForm">
                     <Alert
                         show={this.state.saveStatusOverlayShown}
                         variant={this.state.saveStatusVariant}
@@ -64,13 +69,19 @@ class AlertInput extends Component {
                     <Form.Group as={Row}>
                         <Form.Label column sm={4}>Adı:</Form.Label>
                         <Col>
-                            <Form.Control type="text" required={true} placeholder="test.xyz Status" value={this.state.alertName} onChange={this.handleAlertNameChange} />
+                            <Form.Control type="text" required placeholder="test.xyz Status" value={this.state.alertName} onChange={this.handleAlertNameChange} />
+                            <Form.Control.Feedback type="invalid">
+                                Please choose an alert name
+                            </Form.Control.Feedback>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row}>
                         <Form.Label column sm={4}>URL:</Form.Label>
                         <Col>
-                            <Form.Control type="url" required={true} placeholder="http://test.xyz" value={this.state.alertURL} onChange={this.handleAlertURLChange} />
+                            <Form.Control type="url" required placeholder="http://test.xyz" value={this.state.alertURL} onChange={this.handleAlertURLChange} />
+                            <Form.Control.Feedback type="invalid">
+                                Please enter a valid URL
+                            </Form.Control.Feedback>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row}>
