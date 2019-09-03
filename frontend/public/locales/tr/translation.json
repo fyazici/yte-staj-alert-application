@@ -1,0 +1,9 @@
+{
+    "app": {
+        "nav": {
+            "brand": "Alarm Uygulaması",
+            "add-alert": "Alarm Ekle",
+            "list-alerts": "Alarmları Listele"
+        }
+    }
+}

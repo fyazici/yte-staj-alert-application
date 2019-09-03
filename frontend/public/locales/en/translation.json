@@ -1,0 +1,9 @@
+{
+    "app": {
+        "nav": {
+            "brand": "Alert Application",
+            "add-alert": "Add Alert",
+            "list-alerts": "List Alerts"
+        }
+    }
+}
