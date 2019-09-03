@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import { Container, Button, Accordion, Table, Card, Alert } from "react-bootstrap";
 import axios from "axios"
 import { Link } from "react-router-dom"
+import { withTranslation } from "react-i18next";
 
 class AlertList extends Component {
     constructor(props) {
@@ -23,7 +24,7 @@ class AlertList extends Component {
             this.setState({ 
                 alerts: null,
                 showError: true,
-                errorMessage: "Alarm listesi getirilemedi!"
+                errorMessage: "alertlist.error.retrieve"
             });
             console.error("handleAlertList failed: " + err);
         });
@@ -38,7 +39,7 @@ class AlertList extends Component {
         }).catch((err) => {
             this.setState({
                 showError: true,
-                errorMessage: "Alarm silinemedi!"
+                errorMessage: "alertlist.error.delete"
             });
             console.error("handleAlertDelete failed: " + err);
         })
@@ -55,6 +56,8 @@ class AlertList extends Component {
     }
 
     render() {
+        const { t } = this.props;
+
         var alertCards = "";
         if (this.state.alerts) {
             alertCards = this.state.alerts.map((elem, index) => {
@@ -70,12 +73,12 @@ class AlertList extends Component {
                                 <Table bordered striped hover>
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Alarm URL</th>
-                                            <th>HTTP Metodu</th>
-                                            <th>Kontrol Periyodu (sn)</th>
-                                            <th>Sonuçlar</th>
-                                            <th>İşlevler</th>
+                                            <th>{t("alertlist.table.header.id")}</th>
+                                            <th>{t("alertlist.table.header.url")}</th>
+                                            <th>{t("alertlist.table.header.method")}</th>
+                                            <th>{t("alertlist.table.header.period")}</th>
+                                            <th>{t("alertlist.table.header.results")}</th>
+                                            <th>{t("alertlist.table.header.funcs")}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -84,10 +87,16 @@ class AlertList extends Component {
                                             <td><a href={elem.alertURL}>{elem.alertURL}</a></td>
                                             <td>{elem.httpMethod}</td>
                                             <td>{elem.controlPeriod}</td>
-                                            <td><Link to={"/alerts/" + elem.alertId}><Button variant="info">Sonuçları Göster</Button></Link></td>
+                                            <td>
+                                                <Link to={"/alerts/" + elem.alertId}>
+                                                    <Button variant="info">
+                                                        {t("alertlist.table.func.show")}
+                                                    </Button>
+                                                </Link>
+                                            </td>
                                             <td><Button variant="danger" onClick={() => {
                                                 this.handleAlertDelete(elem.alertId);
-                                            }}>Sil</Button></td>
+                                            }}>{t("alertlist.table.func.delete")}</Button></td>
                                         </tr>
                                     </tbody>
                                 </Table>
@@ -106,16 +115,16 @@ class AlertList extends Component {
                         variant="danger" 
                         dismissible={true} 
                         onClose={() => { this.setState({showError: false}) }}>
-                        {this.state.errorMessage}
+                        {t(this.state.errorMessage)}
                     </Alert>
                     <Accordion>
                         {alertCards}
                     </Accordion>
                 </Container>
-                <Button variant="primary" size="md" block onClick={this.handleAlertList}>Listele</Button>
+                <Button variant="primary" size="md" block onClick={this.handleAlertList}>{t("alertlist.list-button")}</Button>
             </Container>
         );
     }
 }
 
-export default AlertList;
+export default withTranslation()(AlertList);

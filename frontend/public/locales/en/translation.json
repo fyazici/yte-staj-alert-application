@@ -30,5 +30,27 @@
             "seconds-unit": "s"
         },
         "save-button": "Save"
+    },
+
+    "alertlist": {
+        "error": {
+            "retrieve": "Alert list could not be retrieved! (backend error)",
+            "delete": "Alert could not be deleted! (backend error)"
+        },
+        "table": {
+            "header": {
+                "id": "ID",
+                "url": "URL",
+                "method": "HTTP Method",
+                "period": "Control Period",
+                "results": "Results",
+                "funcs": "Functions"
+            },
+            "func": {
+                "show": "Show Results",
+                "delete": "Delete"
+            }
+        },
+        "list-button": "List Alerts"
     }
 }

@@ -6,7 +6,7 @@
             "list-alerts": "Alarmları Listele"
         }
     },
-    
+
     "alertinput": {
         "status": {
             "success": "Alarm başarıyla kaydedildi!",
@@ -30,5 +30,27 @@
             "seconds-unit": "sn"
         },
         "save-button": "Kaydet"
+    },
+
+    "alertlist": {
+        "error": {
+            "retrieve": "Alarm listesi getirilemedi! (arkauç hatası)",
+            "delete": "Alarm silinemedi! (arkauç hatası)"
+        },
+        "table": {
+            "header": {
+                "id": "ID",
+                "url": "URL",
+                "method": "HTTP Metodu",
+                "period": "Kontrol Periyodu",
+                "results": "Sonuçlar",
+                "funcs": "İşlevler"
+            },
+            "func": {
+                "show": "Sonuçları Göster",
+                "delete": "Sil"
+            }
+        },
+        "list-button": "Alarmları Listele"
     }
 }
