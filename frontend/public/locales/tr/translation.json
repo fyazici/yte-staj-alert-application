@@ -5,5 +5,30 @@
             "add-alert": "Alarm Ekle",
             "list-alerts": "Alarmları Listele"
         }
+    },
+    
+    "alertinput": {
+        "status": {
+            "success": "Alarm başarıyla kaydedildi!",
+            "fail-backend": "Alert kaydedilemedi! (arkauç hatası)"
+        },
+        "name": {
+            "label": "Adı:",
+            "placeholder": "test.xyz Durumu",
+            "invalid": "Lütfen bir alarm adı girin"
+        },
+        "url": {
+            "label": "URL:",
+            "placeholder": "http://test.xyz",
+            "invalid": "Lütfen geçerli bir URL girin"
+        },
+        "httpmethod": {
+            "label": "HTTP Metodu:"
+        },
+        "controlperiod": {
+            "label": "Kontrol periyodu:",
+            "seconds-unit": "sn"
+        },
+        "save-button": "Kaydet"
     }
 }

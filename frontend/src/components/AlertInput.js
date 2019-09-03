@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { Form, Row, Col, Button, InputGroup, Container, Alert } from "react-bootstrap"
 import axios from "axios"
-
+import { withTranslation } from "react-i18next";
 
 class AlertInput extends Component {
 
@@ -44,9 +44,9 @@ class AlertInput extends Component {
                 httpMethod: this.state.httpMethod,
                 controlPeriod: this.state.controlPeriod
             }).then((resp) => {
-                this.setState({ saveStatusText: "Alarm kaydetme başarılı!", saveStatusVariant: "success", saveStatusOverlayShown: true });
+                this.setState({ saveStatusText: "alertinput.status.success", saveStatusVariant: "success", saveStatusOverlayShown: true });
             }).catch((err) => {
-                this.setState({ saveStatusText: "Alarm kaydetme başarısız! (arka uç hatası)", saveStatusVariant: "danger", saveStatusOverlayShown: true });
+                this.setState({ saveStatusText: "alertinput.status.fail-backend", saveStatusVariant: "danger", saveStatusOverlayShown: true });
                 console.error("Alert save error: " + err);
             })
         }
@@ -54,6 +54,7 @@ class AlertInput extends Component {
     }
 
     render() {
+        const { t } = this.props;
         return (
             <Container>
                 <Form noValidate validated={this.state.validated} className="AlertInputBox" ref="AlertInputForm">
@@ -63,29 +64,29 @@ class AlertInput extends Component {
                         dismissible={true}
                         onClose={() => this.setState({ saveStatusOverlayShown: false })}>
                         <Col>
-                            {this.state.saveStatusText}
+                            {t(this.state.saveStatusText)}
                         </Col>
                     </Alert>
                     <Form.Group as={Row}>
-                        <Form.Label column sm={4}>Adı:</Form.Label>
+                        <Form.Label column sm={4}>{t("alertinput.name.label")}</Form.Label>
                         <Col>
-                            <Form.Control type="text" required placeholder="test.xyz Status" value={this.state.alertName} onChange={this.handleAlertNameChange} />
+                            <Form.Control type="text" required placeholder={t("alertinput.name.placeholder")} value={this.state.alertName} onChange={this.handleAlertNameChange} />
                             <Form.Control.Feedback type="invalid">
-                                Please choose an alert name
+                                {t("alertinput.name.invalid")}
                             </Form.Control.Feedback>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row}>
-                        <Form.Label column sm={4}>URL:</Form.Label>
+                        <Form.Label column sm={4}>{t("alertinput.url.label")}</Form.Label>
                         <Col>
-                            <Form.Control type="url" required placeholder="http://test.xyz" value={this.state.alertURL} onChange={this.handleAlertURLChange} />
+                            <Form.Control type="url" required placeholder={t("alertinput.url.placeholder")} value={this.state.alertURL} onChange={this.handleAlertURLChange} />
                             <Form.Control.Feedback type="invalid">
-                                Please enter a valid URL
+                            {t("alertinput.url.invalid")}
                             </Form.Control.Feedback>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row}>
-                        <Form.Label column sm={4}>HTTP Metodu:</Form.Label>
+                        <Form.Label column sm={4}>{t("alertinput.httpmethod.label")}</Form.Label>
                         <Col>
                             <Form.Control as="select" value={this.state.httpMethod} onChange={this.handleHTTPMethodChange}>
                                 <option>GET</option>
@@ -94,21 +95,21 @@ class AlertInput extends Component {
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row}>
-                        <Form.Label column sm={4}>Kontrol Periyodu:</Form.Label>
+                        <Form.Label column sm={4}>{t("alertinput.controlperiod.label")}</Form.Label>
                         <Col>
                             <InputGroup>
                                 <Form.Control type="number" min="1" value={this.state.controlPeriod} onChange={this.handleControlPeriodChange} />
                                 <InputGroup.Append>
-                                    <InputGroup.Text>sn</InputGroup.Text>
+                                    <InputGroup.Text>{t("alertinput.controlperiod.seconds-unit")}</InputGroup.Text>
                                 </InputGroup.Append>
                             </InputGroup>
                         </Col>
                     </Form.Group>
-                    <Button variant="primary" size="md" block onClick={this.handleAlertSave}>Kaydet</Button>
+                    <Button variant="primary" size="md" block onClick={this.handleAlertSave}>{t("alertinput.save-button")}</Button>
                 </Form>
             </Container>
         );
     }
 }
 
-export default AlertInput;
+export default withTranslation()(AlertInput);

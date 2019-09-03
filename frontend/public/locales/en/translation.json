@@ -5,5 +5,30 @@
             "add-alert": "Add Alert",
             "list-alerts": "List Alerts"
         }
+    },
+
+    "alertinput": {
+        "status": {
+            "success": "Alert successfully saved!",
+            "fail-backend": "Alert save failed! (backend error)"
+        },
+        "name": {
+            "label": "Name:",
+            "placeholder": "test.xyz Status",
+            "invalid": "Please enter a name"
+        },
+        "url": {
+            "label": "URL:",
+            "placeholder": "http://test.xyz",
+            "invalid": "Please enter a valid URL"
+        },
+        "httpmethod": {
+            "label": "HTTP Method:"
+        },
+        "controlperiod": {
+            "label": "Control Period:",
+            "seconds-unit": "s"
+        },
+        "save-button": "Save"
     }
 }
