@@ -52,5 +52,25 @@
             }
         },
         "list-button": "List Alerts"
+    },
+
+    "resultchart": {
+        "header": {
+            "request-time": "Request Time",
+            "success": "Success",
+            "rtt-ms": "RTT (ms)"
+        },
+        "loading-message": "Loading Chart...",
+        "alertname": "Results for the alert named: {{name}}",
+        "result-since": {
+            "label": "Results for the last: ",
+            "refresh": "Refresh",
+            "min": "min",
+            "mins": "mins",
+            "hour": "hour",
+            "hours": "hours",
+            "day": "day",
+            "days": "days"
+        }
     }
 }

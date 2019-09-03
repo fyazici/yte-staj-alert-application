@@ -1,6 +1,7 @@
 package yte.intern.alertapplication.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 import yte.intern.alertapplication.dto.AlertDTO;
 import yte.intern.alertapplication.dto.ResultDTO;
@@ -75,6 +76,21 @@ public class AlertService {
     public void deleteAlert(Long alertId) {
         if (alertId != null) {
             alertRepository.deleteById(alertId);
+        }
+    }
+
+    public List<ResultDTO> getResultsByIdSinceMinutes(Long alertId, Long sinceMinutes) {
+        Optional<Alert> maybeAlert = alertRepository.findById(alertId);
+        if (maybeAlert.isEmpty()) {
+            return new ArrayList<>();
+        } else {
+            // TODO: do time filtering in dbms
+            LocalDateTime since = LocalDateTime.now(clock).minusMinutes(sinceMinutes);
+            return maybeAlert.get().getResults().stream()
+                    .filter((result) -> result.getRequestedAt().isAfter(since))
+                    .map((result) -> new ResultDTO(
+                        result.getRequestedAt().toString(), result.getStatusCode().equals(200), result.getElapsed()
+            )).collect(Collectors.toList());
         }
     }
 }

@@ -1,5 +1,6 @@
 package yte.intern.alertapplication;
 
+import org.apache.tomcat.jni.Local;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,9 +65,11 @@ public class AlertServiceTests {
         Alert alert = new Alert("Test Alert 1", "http://test.com", "GET", 10L, LOCAL_DATETIME.plusSeconds(10L));
         alert.setId(1L);
 
-        Result result = new Result(alert, LOCAL_DATETIME, 100L, 200);
+        Result result1 = new Result(alert, LOCAL_DATETIME, 100L, 200);
+        Result result2 = new Result(alert, LOCAL_DATETIME.minusMinutes(2), 100L, 200);
         HashSet<Result> results = new HashSet<>();
-        results.add(result);
+        results.add(result1);
+        results.add(result2);
         alert.setResults(results);
 
         ArrayList<Alert> allAlerts = new ArrayList<>();
@@ -197,9 +200,12 @@ public class AlertServiceTests {
         );
 
         // then
-        Assert.assertEquals(1, resultDTOS.size());
+        Assert.assertEquals(2, resultDTOS.size());
+        Assert.assertTrue(resultDTOS.stream().anyMatch(resultDTO ->
+                LOCAL_DATETIME.equals(LocalDateTime.parse(resultDTO.getTimestamp()))));
+        Assert.assertTrue(resultDTOS.stream().anyMatch(resultDTO ->
+                LOCAL_DATETIME.minusMinutes(2).equals(LocalDateTime.parse(resultDTO.getTimestamp()))));
         ResultDTO result = resultDTOS.get(0);
-        Assert.assertEquals(LOCAL_DATETIME, LocalDateTime.parse(result.getTimestamp()));
         Assert.assertEquals(true, result.getSuccess());
         Assert.assertEquals(100L, result.getElapsed().longValue());
     }
@@ -216,6 +222,30 @@ public class AlertServiceTests {
         ArgumentCaptor<Long> captor = ArgumentCaptor.forClass(Long.class);
         verify(alertRepository, times(1)).deleteById(captor.capture());
         Assert.assertEquals(1L, captor.getValue().longValue());
+    }
+
+    @Test
+    public void whenGetResultsByIdSince_thenReturnResult() {
+        // when
+        ArrayList<ResultDTO> resultDTOS = new ArrayList<>(
+                alertService.getResultsByIdSinceMinutes(1L, 1L)
+        );
+
+        // then
+        Assert.assertEquals(1, resultDTOS.size());
+        ResultDTO result = resultDTOS.get(0);
+        Assert.assertEquals(LOCAL_DATETIME, LocalDateTime.parse(result.getTimestamp()));
+    }
+
+    @Test
+    public void whenGetResultsByIdSinceNotFound_thenReturnEmptyList() {
+        // when
+        ArrayList<ResultDTO> resultDTOS = new ArrayList<>(
+                alertService.getResultsByIdSinceMinutes(0L, 0L)
+        );
+
+        // then
+        Assert.assertEquals(0, resultDTOS.size());
     }
 
 }

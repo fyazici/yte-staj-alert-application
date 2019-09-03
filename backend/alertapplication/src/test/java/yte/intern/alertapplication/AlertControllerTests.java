@@ -80,6 +80,7 @@ public class AlertControllerTests {
         when(alertService.getAlerts("1")).thenReturn(alertDTOS1);
         when(alertService.getAlertById(2L)).thenReturn(alertDTO2);
         when(alertService.getResultsById(1L)).thenReturn(resultDTOS);
+        when(alertService.getResultsByIdSinceMinutes(1L, 1L)).thenReturn(resultDTOS);
     }
 
     @Test
@@ -163,5 +164,23 @@ public class AlertControllerTests {
                 .andReturn();
 
         verify(alertService, times(1)).deleteAlert(argThat(aLong -> aLong.equals(1L)));
+    }
+
+    @Test
+    public void givenAlerts_whenGetResultsByIdSince_thenReturnResults() throws Exception {
+        MvcResult reqResult = mvc.perform(get("/results/{alertId}", "1").param("sinceMinutes", "1"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        ResultDTO[] resultDTOS = new ObjectMapper().readValue(reqResult.getResponse().getContentAsString(), ResultDTO[].class);
+
+        Assert.assertEquals(1, resultDTOS.length);
+        Assert.assertEquals(LOCAL_DATETIME.toString(), resultDTOS[0].getTimestamp());
+
+        ArgumentCaptor<Long> idCapture = ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<Long> sinceCapture = ArgumentCaptor.forClass(Long.class);
+        verify(alertService, times(1)).getResultsByIdSinceMinutes(idCapture.capture(), sinceCapture.capture());
+        Assert.assertEquals(1L, idCapture.getValue().longValue());
+        Assert.assertEquals(1L, sinceCapture.getValue().longValue());
     }
 }

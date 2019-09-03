@@ -52,5 +52,25 @@
             }
         },
         "list-button": "Alarmları Listele"
+    },
+
+    "resultchart": {
+        "header": {
+            "request-time": "İstek Zamanı",
+            "success": "Başarı",
+            "rtt-ms": "Gidiş Geliş (ms)"
+        },
+        "loading-message": "Loading Chart...",
+        "alertname": "{{name}} adlı alarm için sonuçlar:",
+        "result-since": {
+            "label": "En fazla şu kadar önce: ",
+            "refresh": "Yenile",
+            "min": "dakika",
+            "mins": "dakika",
+            "hour": "saat",
+            "hours": "saat",
+            "day": "gün",
+            "days": "gün"
+        }
     }
 }

@@ -26,7 +26,7 @@ public class Alert {
     private Long period;
     private LocalDateTime nextDeadline;
 
-    @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "alert")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "alert")
     private Set<Result> results;
 
     public Alert(String name, String url, String method, Long period, LocalDateTime nextDeadline) {

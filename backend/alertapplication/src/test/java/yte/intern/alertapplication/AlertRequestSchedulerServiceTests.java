@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -17,12 +18,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.web.client.RestTemplate;
+import yte.intern.alertapplication.dto.ResultDTO;
 import yte.intern.alertapplication.entity.Alert;
 import yte.intern.alertapplication.entity.Result;
 import yte.intern.alertapplication.repository.AlertRepository;
@@ -70,6 +73,9 @@ public class AlertRequestSchedulerServiceTests {
     private RestTemplate restTemplate;
 
     private MockRestServiceServer mockServer;
+
+    @MockBean
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     @Before
     public void setup() {
@@ -130,7 +136,13 @@ public class AlertRequestSchedulerServiceTests {
         Assert.assertEquals(LOCAL_DATETIME, result.getRequestedAt());
         // TODO: test elapsed time
         Assert.assertEquals(200, result.getStatusCode().intValue());
-        verify(alertRepository).save(argThat(alert1 -> alert1.getResults().size() == 1));
+        verify(alertRepository, times(1)).save(argThat(alert1 -> alert1.getResults().size() == 1));
+
+        ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<ResultDTO> payloadCaptor = ArgumentCaptor.forClass(ResultDTO.class);
+        verify(simpMessagingTemplate, times(1)).convertAndSend(destinationCaptor.capture(), payloadCaptor.capture());
+        Assert.assertEquals("/topic/1", destinationCaptor.getValue());
+        Assert.assertTrue(payloadCaptor.getValue().getSuccess());
     }
 
     @Test
@@ -161,6 +173,12 @@ public class AlertRequestSchedulerServiceTests {
         // TODO: test elapsed time
         Assert.assertEquals(200, result.getStatusCode().intValue());
         verify(alertRepository).save(argThat(alert1 -> alert1.getResults().size() == 1));
+
+        ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<ResultDTO> payloadCaptor = ArgumentCaptor.forClass(ResultDTO.class);
+        verify(simpMessagingTemplate, times(1)).convertAndSend(destinationCaptor.capture(), payloadCaptor.capture());
+        Assert.assertEquals("/topic/1", destinationCaptor.getValue());
+        Assert.assertTrue(payloadCaptor.getValue().getSuccess());
     }
 
     @Test
@@ -191,6 +209,12 @@ public class AlertRequestSchedulerServiceTests {
         // TODO: test elapsed time
         Assert.assertEquals(404, result.getStatusCode().intValue());
         verify(alertRepository).save(argThat(alert1 -> alert1.getResults().size() == 1));
+
+        ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<ResultDTO> payloadCaptor = ArgumentCaptor.forClass(ResultDTO.class);
+        verify(simpMessagingTemplate, times(1)).convertAndSend(destinationCaptor.capture(), payloadCaptor.capture());
+        Assert.assertEquals("/topic/1", destinationCaptor.getValue());
+        Assert.assertFalse(payloadCaptor.getValue().getSuccess());
     }
 
     @Test
@@ -221,5 +245,11 @@ public class AlertRequestSchedulerServiceTests {
         // TODO: test elapsed time
         Assert.assertEquals(-1, result.getStatusCode().intValue());
         verify(alertRepository).save(argThat(alert1 -> alert1.getResults().size() == 1));
+
+        ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<ResultDTO> payloadCaptor = ArgumentCaptor.forClass(ResultDTO.class);
+        verify(simpMessagingTemplate, times(1)).convertAndSend(destinationCaptor.capture(), payloadCaptor.capture());
+        Assert.assertEquals("/topic/1", destinationCaptor.getValue());
+        Assert.assertFalse(payloadCaptor.getValue().getSuccess());
     }
 }
