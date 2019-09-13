@@ -87,6 +87,8 @@ public class AlertControllerTests {
     public void whenCreateAlert_thenServiceCreateAlertCalled() throws Exception {
         AlertDTO alertDTO = new AlertDTO(null, "Test Alert", "http://test.com", "GET", 10L);
 
+        System.out.println(alertService);
+
         mvc.perform(post("/alerts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(alertDTO)))

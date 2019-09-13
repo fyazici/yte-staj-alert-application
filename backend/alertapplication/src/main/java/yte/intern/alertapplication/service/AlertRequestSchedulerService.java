@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -38,6 +39,7 @@ public class AlertRequestSchedulerService {
 
     @Async
     @SuppressWarnings("WeakerAccess")
+    @Transactional
     public void requestWorker(Alert alert) {
         System.out.println(LocalDateTime.now(clock).toString() + " (" + alert.getName() + ") async request worker running");
 
@@ -74,6 +76,6 @@ public class AlertRequestSchedulerService {
         ResultDTO resultDTO = new ResultDTO(
                 result.getRequestedAt().toString(), result.getStatusCode().equals(200), result.getElapsed());
 
-        brokerMessagingTemplate.convertAndSend("/topic/" + result.getAlert().getId(), resultDTO);
+        brokerMessagingTemplate.convertAndSend("/topic/" + alert.getId(), resultDTO);
     }
 }

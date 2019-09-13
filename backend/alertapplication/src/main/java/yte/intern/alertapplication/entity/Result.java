@@ -19,7 +19,7 @@ public class Result {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_alert_id")
     private Alert alert;
 
